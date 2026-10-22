@@ -1,0 +1,1683 @@
+package pages
+
+import (
+	"fmt"
+	"strconv"
+
+	"instalbloc/internal/domain"
+	"instalbloc/internal/views/layouts"
+)
+
+type SubscriptionSummaryView struct {
+	ID                 int64
+	PlanLabel          string
+	Status             string
+	IsSubscribed       bool
+	StartedAtFormatted string
+	ExpiresAtFormatted string
+	AutoRenew          bool
+}
+
+type AssociationOptionView struct {
+	ID      int64
+	Name    string
+	Address string
+	County  string
+	City    string
+}
+
+type TicketCardView struct {
+	ID                 int64
+	Title              string
+	Description        string
+	Category           string
+	Status             string
+	Phase              int
+	PhaseLabel         string
+	Urgency            string
+	UrgencyLabel       string
+	County             string
+	Zone               string
+	Asociatie          string
+	Apartament         string
+	TipSpatiu          string
+	TipInterventie     string
+	ConfirmationsCount int64
+	OffersCount        int
+	IsRead             bool
+	IsReadByAdmin      bool
+	IsEscalated2h      bool
+	CreatedAtFormatted string
+}
+
+type DashboardViewData struct {
+	UserName            string
+	UserEmail           string
+	UserPhone           string
+	UserRole            string
+	RoleBadge           string
+	Subscription        SubscriptionSummaryView
+	FilterStatus        string
+	FilterCategory      string
+	FilterCounty        string
+	FilterAsocID        int64
+	ProviderDomains     []string
+	ProviderCounty      string
+	ManagedAssociations []AssociationOptionView
+	Tickets             []TicketCardView
+	TotalActive         int
+	TotalUrgent         int
+	TotalCompleted      int
+	FlashMsg            string
+	ErrorMsg            string
+}
+
+type NewRequestViewData struct {
+	RequestType          string
+	DefaultName          string
+	DefaultPhone         string
+	DefaultCounty        string
+	DefaultCity          string
+	DefaultAddress       string
+	DefaultAssociation   string
+	DefaultAssociationID int64
+	RequesterType        string
+	ManagedAssociations  []AssociationOptionView
+	AllAssociations      []AssociationOptionView
+	ErrorMsg             string
+}
+
+type OfferCardView struct {
+	ID                 int64
+	RequestID          int64
+	PlumberID          int64
+	ProviderName       string
+	CompanyName        string
+	CompanyCUI         string
+	ProviderPhone      string
+	ProviderRating     string
+	ProviderReviews    int64
+	ProviderVerified   bool
+	PriceBani          int64
+	MaterialsPriceBani int64
+	TotalBani          int64
+	PriceFormatted     string
+	MaterialsFormatted string
+	TotalFormatted     string
+	EstimatedTime      string
+	Message            string
+	RequiresInspection bool
+	Status             string
+	CreatedAtFormatted string
+	IsOwnOffer         bool
+}
+
+type TicketFollowerView struct {
+	Apartament         string
+	MaskedPhone        string
+	CreatedAtFormatted string
+}
+
+type TicketAuditView struct {
+	ViewerName        string
+	ViewerRole        string
+	ViewedAtFormatted string
+}
+
+type RequestDetailViewData struct {
+	ID                          int64
+	Title                       string
+	Description                 string
+	Category                    string
+	Status                      string
+	Phase                       int
+	PhaseLabel                  string
+	TipInterventie              string
+	Urgency                     string
+	UrgencyLabel                string
+	County                      string
+	Zone                        string
+	Address                     string
+	City                        string
+	Asociatie                   string
+	Apartament                  string
+	TipSpatiu                   string
+	ClientName                  string
+	DisplayPhone                string
+	PhoneUnmasked               bool
+	RequesterType               string
+	SursaFonduri                string
+	AprobatAdministrator        bool
+	InvoiceNumber               string
+	ConfirmationsCount          int64
+	IsMajorEmergency            bool
+	CreatedAtFormatted          string
+	AcceptedAtFormatted         string
+	CompletedAtFormatted        string
+	ExtendedUntilFormatted      string
+	ExtensionReason             string
+	RaportLucrariEfectuate      string
+	RaportMateriale             string
+	CostFinalManoperaFormatted  string
+	CostFinalMaterialeFormatted string
+	CostFinalTotalFormatted     string
+	RaportObservatii            string
+	ReportedCompletedAtFormatted string
+	CanTacitFinalize            bool
+	TrackingToken               string
+	IsOwner                     bool
+	IsManagingAssocAdmin        bool
+	IsBeneficiary               bool
+	IsAssignedProvider          bool
+	IsProvider                  bool
+	ProviderSubscribed          bool
+	ProviderMonthlyMods         int64
+	ProviderRemainingMods       int64
+	ExistingPendingOffer        *OfferCardView
+	Offers                      []OfferCardView
+	Followers                   []TicketFollowerView
+	AuditViews                  []TicketAuditView
+	HasReview                   bool
+	ReviewRating                int
+	ReviewComment               string
+	FlashMsg                    string
+	ErrorMsg                    string
+}
+
+type RequestPrintViewData struct {
+	DocType                  string
+	DocTitle                 string
+	TicketID                 int64
+	TicketTitle              string
+	TicketCategory           string
+	TicketDescription        string
+	TicketAddress            string
+	TicketCounty             string
+	TicketAsociatie          string
+	TicketApartament         string
+	ClientName               string
+	ClientPhone              string
+	ProviderName             string
+	ProviderCompany          string
+	ProviderCUI              string
+	ProviderPhone            string
+	SursaFonduriLabel        string
+	AprobatAdmin             bool
+	InvoiceNumber            string
+	ManoperaFormatted        string
+	MaterialeFormatted       string
+	TotalFormatted           string
+	EstimatedTime            string
+	RaportLucrari            string
+	RaportMateriale          string
+	RaportObservatii         string
+	IssuedAtFormatted        string
+	WarrantyExpiresFormatted string
+}
+
+type ProviderOfferDashboardItem struct {
+	OfferID            int64
+	RequestID          int64
+	ReportTitle        string
+	ReportCategory     string
+	ReportCounty       string
+	ReportZone         string
+	ReportAsociatie    string
+	ReportStatus       string
+	ReportPhaseLabel   string
+	PriceFormatted     string
+	MaterialsFormatted string
+	TotalFormatted     string
+	EstimatedTime      string
+	OfferStatus        string
+	OfferStatusLabel   string
+	CreatedAtFormatted string
+}
+
+type ProviderOffersPageData struct {
+	ActiveTab            string
+	TotalCount           int
+	PendingCount         int
+	AcceptedCount        int
+	RejectedCount        int
+	MonthlyModsUsed      int64
+	MonthlyModsRemaining int64
+	Items                []ProviderOfferDashboardItem
+}
+
+templ SubscriptionAutoRenewPartial(sub SubscriptionSummaryView) {
+	<div id="subscription-autorenew-box" class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-stone-200">
+		<div class="text-xs text-slate-600 space-y-0.5">
+			<div>Activare: <span class="font-semibold text-slate-900">{ sub.StartedAtFormatted }</span></div>
+			<div>Expirare (30 zile): <span class="font-semibold text-slate-900">{ sub.ExpiresAtFormatted }</span></div>
+		</div>
+		if sub.ID > 0 {
+			<form
+				action="/dashboard/subscription/auto-renew"
+				method="POST"
+				hx-post="/dashboard/subscription/auto-renew"
+				hx-target="#subscription-autorenew-box"
+				class="inline-flex items-center gap-2"
+			>
+				<input type="hidden" name="subscription_id" value={ strconv.FormatInt(sub.ID, 10) }/>
+				if sub.AutoRenew {
+					<input type="hidden" name="auto_renew" value="0"/>
+					<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Auto-Prelungire: ACTIVĂ</span>
+					<button type="submit" class="px-3 py-1.5 rounded-lg border border-stone-300 bg-white hover:bg-stone-100 text-xs font-semibold text-slate-700 transition-colors">
+						Dezactivează
+					</button>
+				} else {
+					<input type="hidden" name="auto_renew" value="1"/>
+					<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">Auto-Prelungire: OPRITĂ</span>
+					<button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors">
+						Activează
+					</button>
+				}
+			</form>
+		}
+	</div>
+}
+
+templ DashboardTicketsPartial(data DashboardViewData) {
+	<div id="dashboard-tickets-container" class="space-y-4">
+		if len(data.Tickets) == 0 {
+			<div class="bg-white rounded-2xl p-8 border border-stone-200 text-center space-y-3">
+				<p class="text-base font-bold text-slate-800">Nicio lucrare găsită pentru filtrele selectate.</p>
+				<p class="text-xs text-slate-600">
+					if data.UserRole == "prestator" {
+						Panoul de Lucrări afișează automat tichetele din domeniile tale înregistrate și județul selectat.
+					} else {
+						Poți deschide oricând o sesizare nouă de avarie sau o cerere de ofertă tehnică.
+					}
+				</p>
+				if data.UserRole != "prestator" {
+					<div class="pt-2">
+						<a href="/requests/new" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors">
+							+ Raportează Avarie Nouă
+						</a>
+					</div>
+				}
+			</div>
+		} else {
+			<div class="grid grid-cols-1 gap-4">
+				for _, t := range data.Tickets {
+					<article class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs hover:border-orange-300 transition-colors space-y-3">
+						<div class="flex flex-wrap items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span class="text-xs font-bold text-slate-500">#{ strconv.FormatInt(t.ID, 10) }</span>
+								<span
+									class={
+										"px-2.5 py-1 rounded-full text-xs font-bold",
+										templ.KV("bg-sky-100 text-sky-800", t.Phase == 1),
+										templ.KV("bg-amber-100 text-amber-800", t.Phase == 2),
+										templ.KV("bg-orange-100 text-orange-800", t.Phase == 3),
+										templ.KV("bg-emerald-100 text-emerald-800", t.Phase == 4),
+									}
+								>
+									{ t.PhaseLabel }
+								</span>
+								<span
+									class={
+										"px-2.5 py-1 rounded-full text-xs font-semibold",
+										templ.KV("bg-red-100 text-red-700", t.Urgency == "urgenta_imediata"),
+										templ.KV("bg-stone-100 text-slate-700", t.Urgency != "urgenta_imediata"),
+									}
+								>
+									{ t.UrgencyLabel }
+								</span>
+								<span class="px-2.5 py-1 rounded-lg bg-stone-100 text-slate-700 text-xs font-medium">
+									{ t.Category }
+								</span>
+								if t.IsEscalated2h {
+									<span class="px-2.5 py-1 rounded-full bg-red-600 text-white text-xs font-bold">
+										Escaladare SLA &gt; 2h
+									</span>
+								}
+							</div>
+							<div class="flex items-center gap-2 text-xs text-slate-500">
+								<span>{ t.CreatedAtFormatted }</span>
+								if t.IsRead || t.IsReadByAdmin {
+									<span class="text-sky-600 font-bold" title="Tichet vizualizat">✓✓ Văzut</span>
+								} else {
+									<span class="text-slate-400 font-semibold" title="Tichet trimis">✓ Trimis</span>
+								}
+							</div>
+						</div>
+
+						<div>
+							<h3 class="text-base sm:text-lg font-bold text-slate-900">
+								<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d", t.ID)) } class="hover:text-orange-600 transition-colors">
+									{ t.Title }
+								</a>
+							</h3>
+							<p class="text-sm text-slate-600 line-clamp-2 mt-1">{ t.Description }</p>
+						</div>
+
+						<div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-stone-100 text-xs text-slate-600">
+							<div class="flex flex-wrap items-center gap-3">
+								<span class="font-semibold text-slate-800">📍 { t.County } — { t.Zone }</span>
+								if t.Asociatie != "" {
+									<span>🏢 { t.Asociatie }</span>
+								}
+								if t.Apartament != "" {
+									<span>🚪 Ap. { t.Apartament }</span>
+								}
+								if t.ConfirmationsCount > 1 {
+									<span class="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200 text-amber-800 font-bold">
+										👥 { strconv.FormatInt(t.ConfirmationsCount, 10) } apartamente afectate
+									</span>
+								}
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="font-semibold text-slate-700">
+									{ strconv.Itoa(t.OffersCount) } oferte
+								</span>
+								<a
+									href={ templ.SafeURL(fmt.Sprintf("/requests/%d", t.ID)) }
+									class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition-colors"
+								>
+									Vezi Detalii &rarr;
+								</a>
+							</div>
+						</div>
+					</article>
+				}
+			</div>
+		}
+	</div>
+}
+
+templ DashboardPage(meta layouts.PageMeta, data DashboardViewData) {
+	@layouts.Base(meta) {
+		<section class="py-8 px-4 max-w-6xl mx-auto w-full space-y-6">
+			<!-- Header & Quick Actions -->
+			<div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs space-y-4">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div class="space-y-1">
+						<div class="flex items-center gap-2">
+							<span class="px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase">
+								{ data.RoleBadge }
+							</span>
+							<span class="text-xs text-slate-500">{ data.UserEmail }</span>
+						</div>
+						<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Panou Lucrări — { data.UserName }</h1>
+					</div>
+
+					<div class="flex flex-wrap items-center gap-2.5">
+						if data.UserRole == "prestator" {
+							<a
+								href="/dashboard/oferte"
+								class="px-4 py-2.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-100 text-slate-800 text-xs sm:text-sm font-bold transition-colors"
+							>
+								Ofertele Mele Trimise
+							</a>
+						} else {
+							<a
+								href="/requests/new?type=avarie"
+								class="px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors"
+							>
+								+ Raportează Avarie
+							</a>
+							<a
+								href="/requests/new?type=oferta"
+								class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold transition-colors"
+							>
+								Solicită Ofertă Preț
+							</a>
+						}
+					</div>
+				</div>
+
+				@SubscriptionAutoRenewPartial(data.Subscription)
+			</div>
+
+			if data.FlashMsg != "" {
+				<div class="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-sm font-semibold" role="status">
+					{ data.FlashMsg }
+				</div>
+			}
+			if data.ErrorMsg != "" {
+				<div class="p-4 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm font-semibold" role="alert">
+					{ data.ErrorMsg }
+				</div>
+			}
+
+			<!-- KPI Summary Bar -->
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+				<div class="bg-white rounded-2xl p-4 border border-stone-200 flex items-center justify-between">
+					<div>
+						<p class="text-xs font-bold uppercase text-slate-500">Lucrări Active</p>
+						<p class="text-2xl font-bold text-slate-900 mt-1">{ strconv.Itoa(data.TotalActive) }</p>
+					</div>
+					<span class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 text-xs font-bold">În Panou</span>
+				</div>
+				<div class="bg-white rounded-2xl p-4 border border-stone-200 flex items-center justify-between">
+					<div>
+						<p class="text-xs font-bold uppercase text-slate-500">Urgențe Majore</p>
+						<p class="text-2xl font-bold text-red-600 mt-1">{ strconv.Itoa(data.TotalUrgent) }</p>
+					</div>
+					<span class="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 text-xs font-bold">SLA Prioritar</span>
+				</div>
+				<div class="bg-white rounded-2xl p-4 border border-stone-200 flex items-center justify-between">
+					<div>
+						<p class="text-xs font-bold uppercase text-slate-500">Lucrări Finalizate</p>
+						<p class="text-2xl font-bold text-emerald-700 mt-1">{ strconv.Itoa(data.TotalCompleted) }</p>
+					</div>
+					<span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-bold">Garanție 12 Luni</span>
+				</div>
+			</div>
+
+			<!-- Unified HTMX Filter Bar -->
+			<form
+				action="/dashboard"
+				method="GET"
+				hx-get="/dashboard"
+				hx-target="#dashboard-tickets-container"
+				hx-push-url="true"
+				class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-4"
+			>
+				<div class="flex flex-wrap items-center justify-between gap-3">
+					<h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Filtrare Panou Lucrări</h2>
+					if len(data.ProviderDomains) > 0 {
+						<div class="flex flex-wrap items-center gap-1.5">
+							<span class="text-xs text-slate-500">Domenii autorizate:</span>
+							for _, dom := range data.ProviderDomains {
+								<span class="px-2 py-0.5 rounded-md bg-sky-50 border border-sky-200 text-sky-800 text-xs font-semibold">{ dom }</span>
+							}
+						</div>
+					}
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+					<div>
+						<label for="status" class="block text-xs font-bold text-slate-600 mb-1">Stadiu / Urgență</label>
+						<select id="status" name="status" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900">
+							<option value="" selected?={ data.FilterStatus == "" }>Toate Lucrările</option>
+							<option value="urgente" selected?={ data.FilterStatus == "urgente" }>Urgențe Active</option>
+							<option value="programate" selected?={ data.FilterStatus == "programate" }>Lucrări Programate</option>
+							<option value="finalizate" selected?={ data.FilterStatus == "finalizate" }>Lucrări Finalizate</option>
+						</select>
+					</div>
+
+					<div>
+						<label for="category" class="block text-xs font-bold text-slate-600 mb-1">Categorie Tehnică</label>
+						<select id="category" name="category" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900">
+							<option value="" selected?={ data.FilterCategory == "" }>Toate Categoriile</option>
+							for _, cat := range domain.ServiceCategories {
+								<option value={ cat } selected?={ data.FilterCategory == cat }>{ cat }</option>
+							}
+						</select>
+					</div>
+
+					<div>
+						<label for="county" class="block text-xs font-bold text-slate-600 mb-1">Județ</label>
+						<select id="county" name="county" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900">
+							<option value="toate" selected?={ data.FilterCounty == "toate" }>Toate Județele</option>
+							for _, c := range domain.Counties {
+								<option value={ c } selected?={ data.FilterCounty == c }>{ c }</option>
+							}
+						</select>
+					</div>
+
+					if len(data.ManagedAssociations) > 0 {
+						<div>
+							<label for="asoc" class="block text-xs font-bold text-slate-600 mb-1">Asociație Administrată</label>
+							<select id="asoc" name="asoc" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900">
+								<option value="0" selected?={ data.FilterAsocID == 0 }>Toate Asociațiile Mele</option>
+								for _, a := range data.ManagedAssociations {
+									<option value={ strconv.FormatInt(a.ID, 10) } selected?={ data.FilterAsocID == a.ID }>{ a.Name }</option>
+								}
+							</select>
+						</div>
+					} else {
+						<div class="flex items-end">
+							<button
+								type="submit"
+								class="w-full py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold transition-colors"
+							>
+								Aplică Filtre
+							</button>
+						</div>
+					}
+				</div>
+
+				if len(data.ManagedAssociations) > 0 {
+					<div class="flex justify-end">
+						<button
+							type="submit"
+							class="py-2 px-5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors"
+						>
+							Aplică Filtre
+						</button>
+					</div>
+				}
+			</form>
+
+			@DashboardTicketsPartial(data)
+		</section>
+	}
+}
+
+templ NewRequestPage(meta layouts.PageMeta, data NewRequestViewData) {
+	@layouts.Base(meta) {
+		<section class="py-10 px-4 max-w-3xl mx-auto w-full">
+			<div class="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6">
+				<div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200 pb-4">
+					<div>
+						<span class="px-2.5 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase">
+							if data.RequestType == "oferta" {
+								Cerere Ofertă &amp; Proiectare
+							} else {
+								Sesizare Avarie Tehnică
+							}
+						</span>
+						<h1 class="text-2xl font-bold text-slate-900 mt-1">
+							if data.RequestType == "oferta" {
+								Solicită Ofertă de Preț pentru Lucrări
+							} else {
+								Raportează Avarie Nouă în Panoul de Lucrări
+							}
+						</h1>
+					</div>
+					<a href="/dashboard" class="text-xs font-bold text-slate-600 hover:text-slate-900">
+						&larr; Înapoi la Panou Lucrări
+					</a>
+				</div>
+
+				<!-- Mode Switcher -->
+				<div class="grid grid-cols-2 gap-2 p-1.5 bg-stone-100 rounded-xl border border-stone-200">
+					<a
+						href="/requests/new?type=avarie"
+						class={
+							"text-center py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-colors",
+							templ.KV("bg-orange-600 text-white", data.RequestType != "oferta"),
+							templ.KV("text-slate-700 hover:bg-white", data.RequestType == "oferta"),
+						}
+					>
+						🚨 Raportează Avarie
+					</a>
+					<a
+						href="/requests/new?type=oferta"
+						class={
+							"text-center py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-colors",
+							templ.KV("bg-slate-900 text-white", data.RequestType == "oferta"),
+							templ.KV("text-slate-700 hover:bg-white", data.RequestType != "oferta"),
+						}
+					>
+						📋 Solicită Ofertă Preț
+					</a>
+				</div>
+
+				if data.ErrorMsg != "" {
+					<div class="p-4 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm font-semibold" role="alert">
+						{ data.ErrorMsg }
+					</div>
+				}
+
+				<form action="/requests/new" method="POST" class="space-y-4">
+					<input type="hidden" name="request_type" value={ data.RequestType }/>
+
+					<div class="space-y-1">
+						<label for="title" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Titlu Scurt Lucrare / Avarie *</label>
+						<input
+							id="title"
+							name="title"
+							type="text"
+							required
+							placeholder="Ex: Conductă apă rece fisurată în subsol scara B"
+							class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+						/>
+					</div>
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="space-y-1">
+							<label for="category" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Categorie Tehnică (14 Domenii) *</label>
+							<select
+								id="category"
+								name="category"
+								required
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								for _, cat := range domain.ServiceCategories {
+									<option value={ cat }>{ cat }</option>
+								}
+							</select>
+						</div>
+
+						<div class="space-y-1">
+							<label for="urgency" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nivel de Urgență *</label>
+							<select
+								id="urgency"
+								name="urgency"
+								required
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								if data.RequestType == "oferta" {
+									<option value="programare">Cu programare / Ofertare</option>
+									<option value="3_5_zile">În 3–5 zile lucrătoare</option>
+									<option value="1_2_zile">În 1–2 zile</option>
+								} else {
+									<option value="urgenta_imediata">Urgență Imediată (Avarie Activă)</option>
+									<option value="1_2_zile">În 1–2 zile</option>
+									<option value="3_5_zile">În 3–5 zile</option>
+									<option value="programare">Cu programare</option>
+								}
+							</select>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+						<div class="space-y-1">
+							<label for="tip_spatiu" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Zona Afectată *</label>
+							<select
+								id="tip_spatiu"
+								name="tip_spatiu"
+								required
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								<option value="spatiu_comun">Spațiu Comun Bloc (Subsol / Coloană / Acoperiș)</option>
+								<option value="apartament">În Apartament Privat</option>
+							</select>
+						</div>
+
+						<div class="space-y-1">
+							<label for="apartament" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nr. Apartament / Scară</label>
+							<input
+								id="apartament"
+								name="apartament"
+								type="text"
+								placeholder="Ex: Sc. A, Ap. 12"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+
+						<div class="space-y-1">
+							<label for="sursa_fonduri" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Sursă Decontare</label>
+							<select
+								id="sursa_fonduri"
+								name="sursa_fonduri"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								<option value="locatar" selected?={ data.RequesterType != "asociatie" }>Buget Propriu Locatar</option>
+								<option value="fond_reparatii_bloc" selected?={ data.RequesterType == "asociatie" }>Fond Reparații Asociație Bloc</option>
+							</select>
+						</div>
+					</div>
+
+					if len(data.ManagedAssociations) > 0 {
+						<div class="space-y-1">
+							<label for="association_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Asociația de Proprietari</label>
+							<select
+								id="association_id"
+								name="association_id"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								for _, a := range data.ManagedAssociations {
+									<option value={ strconv.FormatInt(a.ID, 10) } selected?={ a.ID == data.DefaultAssociationID }>
+										{ a.Name } ({ a.Address })
+									</option>
+								}
+							</select>
+						</div>
+					} else {
+						<div class="space-y-1">
+							<label for="asociatie" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Denumire Asociație / Bloc (opțional)</label>
+							<input
+								id="asociatie"
+								name="asociatie"
+								type="text"
+								value={ data.DefaultAssociation }
+								placeholder="Ex: Asociația de Proprietari Bloc M10"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					}
+
+					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+						<div class="space-y-1">
+							<label for="county" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Județ *</label>
+							<select
+								id="county"
+								name="county"
+								required
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								for _, c := range domain.Counties {
+									<option value={ c } selected?={ c == data.DefaultCounty }>{ c }</option>
+								}
+							</select>
+						</div>
+						<div class="space-y-1">
+							<label for="zone" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Localitate / Cartier / Sector *</label>
+							<input
+								id="zone"
+								name="zone"
+								type="text"
+								required
+								value={ data.DefaultCity }
+								placeholder="Ex: Sector 3, Titan"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+						<div class="space-y-1">
+							<label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Adresă Exactă Imobil *</label>
+							<input
+								id="address"
+								name="address"
+								type="text"
+								required
+								value={ data.DefaultAddress }
+								placeholder="Str. Exemplu nr. 10, Bl. A1"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="space-y-1">
+							<label for="client_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nume Persoană de Contact *</label>
+							<input
+								id="client_name"
+								name="client_name"
+								type="text"
+								required
+								value={ data.DefaultName }
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+						<div class="space-y-1">
+							<label for="client_phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Telefon de Contact *</label>
+							<input
+								id="client_phone"
+								name="client_phone"
+								type="tel"
+								required
+								value={ data.DefaultPhone }
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					</div>
+
+					<div class="space-y-1">
+						<label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Descriere Detaliată a Problemei / Lucrării *</label>
+						<textarea
+							id="description"
+							name="description"
+							rows="4"
+							required
+							placeholder="Descrie manifestarea avariei, etajul/subsolul, accesul la robineți și orice detalii utile pentru ofertare..."
+							class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+						></textarea>
+					</div>
+
+					<button
+						type="submit"
+						class="w-full py-3.5 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm shadow-xs transition-colors"
+					>
+						Publică Tichetul în Panoul de Lucrări
+					</button>
+				</form>
+			</div>
+		</section>
+	}
+}
+
+templ RequestDetailPartial(data RequestDetailViewData) {
+	<div class="space-y-6">
+		if data.FlashMsg != "" {
+			<div class="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-sm font-semibold" role="status">
+				{ data.FlashMsg }
+			</div>
+		}
+		if data.ErrorMsg != "" {
+			<div class="p-4 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm font-semibold" role="alert">
+				{ data.ErrorMsg }
+			</div>
+		}
+
+		<!-- 4-Phase Stepper Header -->
+		<div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs space-y-5">
+			<div class="flex flex-wrap items-center justify-between gap-2">
+				<div class="flex flex-wrap items-center gap-2">
+					<span class="text-xs font-bold text-slate-500">Tichet #{ strconv.FormatInt(data.ID, 10) }</span>
+					<span class="px-2.5 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-bold">{ data.PhaseLabel }</span>
+					<span class="px-2.5 py-1 rounded-lg bg-stone-100 text-slate-700 text-xs font-semibold">{ data.Category }</span>
+					<span
+						class={
+							"px-2.5 py-1 rounded-full text-xs font-bold",
+							templ.KV("bg-red-100 text-red-700", data.Urgency == "urgenta_imediata"),
+							templ.KV("bg-stone-100 text-slate-700", data.Urgency != "urgenta_imediata"),
+						}
+					>
+						{ data.UrgencyLabel }
+					</span>
+				</div>
+				<a href="/dashboard" class="text-xs font-bold text-slate-600 hover:text-slate-900">
+					&larr; Înapoi la Panou Lucrări
+				</a>
+			</div>
+
+			<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">{ data.Title }</h1>
+
+			<!-- 4-Stage Visual Stepper -->
+			<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+				<div class={ "p-3 rounded-xl border text-xs font-bold", templ.KV("bg-sky-50 border-sky-300 text-sky-900", data.Phase >= 1), templ.KV("bg-stone-50 border-stone-200 text-slate-400", data.Phase < 1) }>
+					1. Deschis (Ofertare)
+				</div>
+				<div class={ "p-3 rounded-xl border text-xs font-bold", templ.KV("bg-amber-50 border-amber-300 text-amber-900", data.Phase >= 2), templ.KV("bg-stone-50 border-stone-200 text-slate-400", data.Phase < 2) }>
+					2. Ofertă Acceptată
+				</div>
+				<div class={ "p-3 rounded-xl border text-xs font-bold", templ.KV("bg-orange-50 border-orange-300 text-orange-900", data.Phase >= 3), templ.KV("bg-stone-50 border-stone-200 text-slate-400", data.Phase < 3) }>
+					3. În Lucru (Execuție)
+				</div>
+				<div class={ "p-3 rounded-xl border text-xs font-bold", templ.KV("bg-emerald-50 border-emerald-300 text-emerald-900", data.Phase == 4), templ.KV("bg-stone-50 border-stone-200 text-slate-400", data.Phase < 4) }>
+					4. Finalizat &amp; Recepționat
+				</div>
+			</div>
+
+			<p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed bg-stone-50 p-4 rounded-xl border border-stone-200">
+				{ data.Description }
+			</p>
+
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-600 pt-2">
+				<div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+					<div class="font-bold text-slate-800 uppercase">Locație Intervenție</div>
+					<div>Județ: <span class="font-semibold text-slate-900">{ data.County } ({ data.Zone })</span></div>
+					if data.Address != "" {
+						<div>Adresă: <span class="font-semibold text-slate-900">{ data.Address }</span></div>
+					}
+					if data.Asociatie != "" {
+						<div>Asociație: <span class="font-semibold text-slate-900">{ data.Asociatie }</span></div>
+					}
+					if data.Apartament != "" {
+						<div>Apartament: <span class="font-semibold text-slate-900">{ data.Apartament }</span></div>
+					}
+				</div>
+
+				<div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+					<div class="font-bold text-slate-800 uppercase">Date Beneficiar &amp; Contact</div>
+					<div>Persoană: <span class="font-semibold text-slate-900">{ data.ClientName }</span></div>
+					<div>
+						Telefon:
+						<span class="font-bold text-slate-900">{ data.DisplayPhone }</span>
+						if !data.PhoneUnmasked {
+							<span class="block text-slate-500 mt-0.5">(Numărul complet devine vizibil după acceptarea ofertei)</span>
+						}
+					</div>
+					<div>Publicat la: <span class="font-semibold text-slate-900">{ data.CreatedAtFormatted }</span></div>
+				</div>
+
+				<div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+					<div class="font-bold text-slate-800 uppercase">Regim Decontare &amp; Documente</div>
+					<div>
+						Sursă fonduri:
+						if data.SursaFonduri == "fond_reparatii_bloc" {
+							<span class="font-bold text-emerald-800">Fond Reparații Asociație</span>
+						} else {
+							<span class="font-bold text-slate-900">Buget Propriu Locatar</span>
+						}
+					</div>
+					<div>
+						Viză Administrator:
+						if data.AprobatAdministrator {
+							<span class="text-emerald-700 font-bold">✓ Aprobat</span>
+						} else {
+							<span class="text-amber-700 font-semibold">În așteptare</span>
+						}
+					</div>
+					<div class="flex flex-wrap gap-2 pt-1.5">
+						<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d/print?type=draft", data.ID)) } target="_blank" class="px-2.5 py-1 rounded-lg bg-white border border-stone-300 text-slate-800 font-semibold hover:bg-stone-100">
+							🖨️ Proformă / Deviz
+						</a>
+						if data.Phase >= 3 {
+							<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d/print?type=pv", data.ID)) } target="_blank" class="px-2.5 py-1 rounded-lg bg-white border border-stone-300 text-slate-800 font-semibold hover:bg-stone-100">
+								📄 Proces-Verbal
+							</a>
+						}
+						if data.Phase == 4 {
+							<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d/print?type=garantie", data.ID)) } target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 font-bold hover:bg-emerald-100">
+								🛡️ Certificat Garanție
+							</a>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Association Fund Approval Panel (for Managing Assoc Admin or Owner) -->
+		if (data.IsManagingAssocAdmin || data.IsOwner) && data.Phase < 4 {
+			<div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-3">
+				<h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">Decizie Decontare &amp; Viză Administrator</h2>
+				<form
+					action={ templ.SafeURL(fmt.Sprintf("/requests/%d/funds", data.ID)) }
+					method="POST"
+					hx-post={ fmt.Sprintf("/requests/%d/funds", data.ID) }
+					hx-target="#request-detail-container"
+					class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end"
+				>
+					<div>
+						<label class="block text-xs font-bold text-slate-600 mb-1">Sursă Fonduri</label>
+						<select name="sursa_fonduri" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs font-semibold text-slate-900">
+							<option value="locatar" selected?={ data.SursaFonduri == "locatar" }>Buget Locatar</option>
+							<option value="fond_reparatii_bloc" selected?={ data.SursaFonduri == "fond_reparatii_bloc" }>Fond Reparații Bloc</option>
+						</select>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-600 mb-1">Aprobare Administrator</label>
+						<select name="aprobat_administrator" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs font-semibold text-slate-900">
+							<option value="1" selected?={ data.AprobatAdministrator }>Aprobat (Bun de Plată)</option>
+							<option value="0" selected?={ !data.AprobatAdministrator }>Neaprobat / În analiză</option>
+						</select>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-600 mb-1">Nr. Factură / Chitanță</label>
+						<input
+							type="text"
+							name="invoice_number"
+							value={ data.InvoiceNumber }
+							placeholder="Ex: FACT-2026-019"
+							class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"
+						/>
+					</div>
+					<button type="submit" class="py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors">
+						Salvează Decizia
+					</button>
+				</form>
+			</div>
+		}
+
+		<!-- Phase 2 -> Phase 3 & Phase 4 Field Intervention Controls -->
+		if data.Phase == 2 || data.Phase == 3 {
+			<div class="bg-white rounded-2xl p-6 border border-orange-300 shadow-xs space-y-5">
+				<h2 class="text-base font-bold text-slate-900">Control Execuție în Teren &amp; Recepție Lucrare</h2>
+
+				<!-- Golden Rule Phase 2 -> Phase 3: ONLY Beneficiary can start work -->
+				if data.Phase == 2 {
+					if data.IsBeneficiary {
+						<div class="p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
+							<div class="space-y-1">
+								<p class="text-sm font-bold text-amber-900">Confirmare Prezență Echipă în Teren (Trecere în Faza 3 — În Lucru)</p>
+								<p class="text-xs text-amber-800">
+									Conform regulii de securitate InstalBloc, doar beneficiarul (locatarul sau administratorul asociației) poate confirma începerea efectivă a lucrării.
+								</p>
+							</div>
+							<form
+								action={ templ.SafeURL(fmt.Sprintf("/requests/%d/start-work", data.ID)) }
+								method="POST"
+								hx-post={ fmt.Sprintf("/requests/%d/start-work", data.ID) }
+								hx-target="#request-detail-container"
+							>
+								<input type="hidden" name="token" value={ data.TrackingToken }/>
+								<button type="submit" class="px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors">
+									🔧 Confirmă Începerea Lucrării (În Lucru)
+								</button>
+							</form>
+						</div>
+					} else if data.IsAssignedProvider {
+						<div class="p-4 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-900 space-y-1">
+							<p class="font-bold">Oferta ta a fost acceptată! Așteptare confirmare începere lucrare de către beneficiar.</p>
+							<p>La sosirea la imobil, solicită proprietarului sau administratorului să apese butonul „Confirmă Începerea Lucrării” pentru a trece tichetul în stadiul „3. În Lucru”.</p>
+						</div>
+					}
+				}
+
+				<!-- Assigned Provider Technical Completion Report Form -->
+				if data.IsAssignedProvider {
+					<div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-3">
+						<h3 class="text-sm font-bold text-slate-900">Deviz Final &amp; Raport Tehnic Prestator (Pentru Proces-Verbal și Garanție)</h3>
+						<form
+							action={ templ.SafeURL(fmt.Sprintf("/requests/%d/provider-report", data.ID)) }
+							method="POST"
+							hx-post={ fmt.Sprintf("/requests/%d/provider-report", data.ID) }
+							hx-target="#request-detail-container"
+							class="space-y-3"
+						>
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Operațiuni Tehnice Efectuate *</label>
+									<textarea
+										name="raport_lucrari"
+										rows="2"
+										required
+										placeholder="Ex: Înlocuit tronson țeavă PPR DN32, montat robinet sferic..."
+										class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"
+									>{ data.RaportLucrariEfectuate }</textarea>
+								</div>
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Materiale Puse în Operă</label>
+									<textarea
+										name="raport_materiale"
+										rows="2"
+										placeholder="Ex: 3m țeavă PPR PN20, 2 mufe, 1 robinet 1 tol..."
+										class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"
+									>{ data.RaportMateriale }</textarea>
+								</div>
+							</div>
+							<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Cost Final Manoperă (RON) *</label>
+									<input type="number" step="0.01" min="0" name="cost_manopera" required placeholder="Ex: 350" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"/>
+								</div>
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Cost Final Materiale (RON)</label>
+									<input type="number" step="0.01" min="0" name="cost_materiale" value="0" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"/>
+								</div>
+								<div>
+									<label class="block text-xs font-bold text-slate-700 mb-1">Observații &amp; Recomandări</label>
+									<input type="text" name="raport_observatii" value={ data.RaportObservatii } placeholder="Ex: Presiune testată la 4 bar" class="w-full px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"/>
+								</div>
+							</div>
+							<button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors">
+								Salvează Raportul Tehnic &amp; Notifică Finalizarea
+							</button>
+						</form>
+
+						if data.CanTacitFinalize {
+							<form
+								action={ templ.SafeURL(fmt.Sprintf("/requests/%d/tacit-complete", data.ID)) }
+								method="POST"
+								hx-post={ fmt.Sprintf("/requests/%d/tacit-complete", data.ID) }
+								hx-target="#request-detail-container"
+								class="pt-2 border-t border-stone-200 flex items-center justify-between"
+							>
+								<span class="text-xs text-emerald-800 font-semibold">Au trecut peste 72h de la raportul tehnic fără obiecții. Poți închide tichetul prin Recepție Tacită.</span>
+								<button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+									Finalizează prin Recepție Tacită (72h)
+								</button>
+							</form>
+						}
+					</div>
+				}
+
+				<!-- Beneficiary Finalize & Mandatory Review (1-5 Stars) -->
+				if data.IsBeneficiary {
+					<div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-3">
+						<h3 class="text-sm font-bold text-emerald-950">Recepție Finală Lucrare &amp; Acordare Recenzie Prestator (Pasul 4 — Finalizat)</h3>
+						<form
+							action={ templ.SafeURL(fmt.Sprintf("/requests/%d/complete", data.ID)) }
+							method="POST"
+							hx-post={ fmt.Sprintf("/requests/%d/complete", data.ID) }
+							hx-target="#request-detail-container"
+							class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end"
+						>
+							<div>
+								<label class="block text-xs font-bold text-emerald-900 mb-1">Calificativ Prestator (1–5 Stele) *</label>
+								<select name="rating" required class="w-full px-3 py-2 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-900">
+									<option value="5">⭐⭐⭐⭐⭐ (5/5 — Excelent)</option>
+									<option value="4">⭐⭐⭐⭐ (4/5 — Foarte Bine)</option>
+									<option value="3">⭐⭐⭐ (3/5 — Satisfăcător)</option>
+									<option value="2">⭐⭐ (2/5 — Sub așteptări)</option>
+									<option value="1">⭐ (1/5 — Nesatisfăcător)</option>
+								</select>
+							</div>
+							<div>
+								<label class="block text-xs font-bold text-emerald-900 mb-1">Comentariu / Feedback Recepție</label>
+								<input type="text" name="comment" placeholder="Ex: Intervenție promptă, curățenie la final..." class="w-full px-3 py-2 rounded-xl border border-emerald-300 bg-white text-xs text-slate-900"/>
+							</div>
+							<button type="submit" class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors">
+								✅ Confirmă Recepția &amp; Finalizează Tichetul
+							</button>
+						</form>
+					</div>
+
+					<!-- SLA Extension & Provider Decoupling Controls -->
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-stone-200">
+						<form
+							action={ templ.SafeURL(fmt.Sprintf("/requests/%d/extend", data.ID)) }
+							method="POST"
+							hx-post={ fmt.Sprintf("/requests/%d/extend", data.ID) }
+							hx-target="#request-detail-container"
+							class="flex flex-wrap items-center gap-2"
+						>
+							<select name="days" class="px-2.5 py-1.5 rounded-lg border border-stone-300 bg-white text-xs font-semibold text-slate-800">
+								<option value="3">+3 zile păsuire SLA</option>
+								<option value="7">+7 zile păsuire SLA</option>
+							</select>
+							<input type="text" name="reason" required placeholder="Motiv prelungire (ex: comandă piesă)" class="flex-1 px-2.5 py-1.5 rounded-lg border border-stone-300 bg-white text-xs text-slate-900"/>
+							<button type="submit" class="px-3 py-1.5 rounded-lg bg-stone-200 hover:bg-stone-300 text-slate-800 text-xs font-bold">
+								Prelungește Termen
+							</button>
+						</form>
+
+						<form
+							action={ templ.SafeURL(fmt.Sprintf("/requests/%d/reopen", data.ID)) }
+							method="POST"
+							hx-post={ fmt.Sprintf("/requests/%d/reopen", data.ID) }
+							hx-target="#request-detail-container"
+							class="flex justify-end"
+						>
+							<button type="submit" class="px-3.5 py-1.5 rounded-lg border border-red-300 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold">
+								🔄 Decuplează Prestatorul &amp; Redeschide Ofertarea
+							</button>
+						</form>
+					</div>
+				}
+			</div>
+		}
+
+		<!-- Provider Technical Report Summary (if filled) -->
+		if data.RaportLucrariEfectuate != "" {
+			<div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-2">
+				<div class="flex items-center justify-between">
+					<h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">Raport Tehnic de Execuție &amp; Deviz Final</h2>
+					<span class="text-xs text-slate-500">Completat la: { data.ReportedCompletedAtFormatted }</span>
+				</div>
+				<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700">
+					<div class="p-3 rounded-xl bg-stone-50 border border-stone-200">
+						<span class="font-bold block text-slate-900">Lucrări efectuate:</span>
+						{ data.RaportLucrariEfectuate }
+					</div>
+					<div class="p-3 rounded-xl bg-stone-50 border border-stone-200">
+						<span class="font-bold block text-slate-900">Materiale utilizate:</span>
+						if data.RaportMateriale != "" {
+							{ data.RaportMateriale }
+						} else {
+							<span>Fără materiale suplimentare</span>
+						}
+					</div>
+					<div class="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+						<div>Manoperă finală: <span class="font-bold text-slate-900">{ data.CostFinalManoperaFormatted }</span></div>
+						<div>Materiale finale: <span class="font-bold text-slate-900">{ data.CostFinalMaterialeFormatted }</span></div>
+						<div>Total deviz final: <span class="font-bold text-emerald-700">{ data.CostFinalTotalFormatted }</span></div>
+					</div>
+				</div>
+			</div>
+		}
+
+		<!-- Provider Offer Submission / Modification Box -->
+		if data.IsProvider && data.Phase == 1 {
+			<div class="bg-white rounded-2xl p-6 border border-sky-300 shadow-xs space-y-4">
+				<div class="flex flex-wrap items-center justify-between gap-2">
+					<div>
+						<h2 class="text-base font-bold text-slate-900">
+							if data.ExistingPendingOffer != nil {
+								Actualizează Oferta Ta Tehnică &amp; Financiară
+							} else {
+								Trimite Ofertă de Intervenție (100% Gratuit)
+							}
+						</h2>
+						<p class="text-xs text-slate-600">
+							Oferta inițială și retragerea ofertei sunt gratuite. Modificări de preț disponibile luna aceasta:
+							<span class="font-bold text-sky-800">{ strconv.FormatInt(data.ProviderRemainingMods, 10) } din 3</span>.
+						</p>
+					</div>
+					if data.ExistingPendingOffer != nil {
+						<form
+							action={ templ.SafeURL(fmt.Sprintf("/requests/%d/offers/%d/withdraw", data.ID, data.ExistingPendingOffer.ID)) }
+							method="POST"
+							hx-post={ fmt.Sprintf("/requests/%d/offers/%d/withdraw", data.ID, data.ExistingPendingOffer.ID) }
+							hx-target="#request-detail-container"
+						>
+							<button type="submit" class="px-3.5 py-2 rounded-xl border border-red-300 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold">
+								Retrage Oferta (Gratuit)
+							</button>
+						</form>
+					}
+				</div>
+
+				if !data.ProviderSubscribed {
+					<div class="p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-semibold">
+						Contul tău de prestator nu are un abonament activ în acest moment. Contactează administrarea platformei pentru activare.
+					</div>
+				} else {
+					<form
+						action={ templ.SafeURL(fmt.Sprintf("/requests/%d/offers", data.ID)) }
+						method="POST"
+						hx-post={ fmt.Sprintf("/requests/%d/offers", data.ID) }
+						hx-target="#request-detail-container"
+						class="space-y-4"
+					>
+						<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+							<div>
+								<label class="block text-xs font-bold text-slate-700 mb-1">Preț Manoperă (RON) *</label>
+								<input
+									type="number"
+									step="0.01"
+									min="1"
+									name="price"
+									required
+									placeholder="Ex: 250"
+									class="w-full px-3.5 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+								/>
+							</div>
+							<div>
+								<label class="block text-xs font-bold text-slate-700 mb-1">Cost Estimat Materiale (RON)</label>
+								<input
+									type="number"
+									step="0.01"
+									min="0"
+									name="materials_price"
+									value="0"
+									placeholder="Ex: 120"
+									class="w-full px-3.5 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+								/>
+							</div>
+							<div>
+								<label class="block text-xs font-bold text-slate-700 mb-1">Timp Estimat de Sosire / Execuție *</label>
+								<input
+									type="text"
+									name="estimated_time"
+									required
+									placeholder="Ex: În 90 minute / Mâine ora 10:00"
+									class="w-full px-3.5 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+								/>
+							</div>
+						</div>
+
+						<div>
+							<label class="block text-xs font-bold text-slate-700 mb-1">Detalii Tehnice Ofertă &amp; Garanție Acordată *</label>
+							<textarea
+								name="message"
+								rows="2"
+								required
+								placeholder="Specifică soluția propusă, echipamentul folosit și condițiile de intervenție..."
+								class="w-full px-3.5 py-2 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							></textarea>
+						</div>
+
+						<div class="flex flex-wrap items-center justify-between gap-3">
+							<label class="inline-flex items-center gap-2 text-xs font-semibold text-slate-700">
+								<input type="checkbox" name="requires_inspection" value="1" class="w-4 h-4"/>
+								Necesită constatare tehnică la fața locului înaintea devizului final
+							</label>
+							<button
+								type="submit"
+								class="px-5 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-800 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors"
+							>
+								if data.ExistingPendingOffer != nil {
+									Actualizează Oferta ({ strconv.FormatInt(data.ProviderRemainingMods, 10) }/3 rămase)
+								} else {
+									Trimite Oferta în Panou
+								}
+							</button>
+						</div>
+					</form>
+				}
+			</div>
+		}
+
+		<!-- Offers List Section -->
+		<div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs space-y-4">
+			<div class="flex items-center justify-between">
+				<h2 class="text-base font-bold text-slate-900">Oferte Primite de la Prestatori ({ strconv.Itoa(len(data.Offers)) })</h2>
+				<span class="text-xs text-slate-500">Prețuri exprimate în RON (manoperă + materiale)</span>
+			</div>
+
+			if len(data.Offers) == 0 {
+				<p class="text-xs text-slate-500 py-4 text-center">
+					Până în acest moment nu a fost depusă nicio ofertă. Prestatorii autorizați din județul { data.County } au fost alertați.
+				</p>
+			} else {
+				<div class="space-y-3">
+					for _, off := range data.Offers {
+						<div
+							class={
+								"p-4 rounded-xl border space-y-3",
+								templ.KV("bg-emerald-50 border-emerald-300", off.Status == "accepted"),
+								templ.KV("bg-stone-50 border-stone-200", off.Status == "pending"),
+								templ.KV("bg-stone-100 border-stone-200 opacity-70", off.Status == "rejected" || off.Status == "withdrawn"),
+							}
+						>
+							<div class="flex flex-wrap items-start justify-between gap-3">
+								<div>
+									<div class="flex flex-wrap items-center gap-2">
+										<span class="text-sm font-bold text-slate-900">
+											if off.CompanyName != "" {
+												{ off.CompanyName } ({ off.ProviderName })
+											} else {
+												{ off.ProviderName }
+											}
+										</span>
+										if off.ProviderVerified {
+											<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">✓ Verificat</span>
+										}
+										<span class="text-xs font-semibold text-amber-700">⭐ { off.ProviderRating } ({ strconv.FormatInt(off.ProviderReviews, 10) } recenzii)</span>
+									</div>
+									<p class="text-xs text-slate-500 mt-0.5">
+										Timp estimat: <span class="font-semibold text-slate-800">{ off.EstimatedTime }</span> · Trimisă la { off.CreatedAtFormatted }
+									</p>
+								</div>
+
+								<div class="text-right">
+									<div class="text-base font-bold text-slate-900">Total: { off.TotalFormatted }</div>
+									<div class="text-xs text-slate-600">
+										Manoperă: { off.PriceFormatted } · Materiale: { off.MaterialsFormatted }
+									</div>
+								</div>
+							</div>
+
+							if off.Message != "" {
+								<p class="text-xs text-slate-700 bg-white p-3 rounded-lg border border-stone-200">{ off.Message }</p>
+							}
+
+							<div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+								<div class="flex items-center gap-2 text-xs">
+									if off.RequiresInspection {
+										<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 font-semibold">Necesită constatare la fața locului</span>
+									}
+									if off.Status == "accepted" {
+										<span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-bold">✓ Ofertă Acceptată</span>
+									} else if off.Status == "withdrawn" {
+										<span class="px-2.5 py-0.5 rounded-full bg-stone-300 text-slate-700 font-bold">Retrasă de prestator</span>
+									} else if off.Status == "rejected" {
+										<span class="px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 font-bold">Respinsă</span>
+									}
+								</div>
+
+								if (data.IsOwner || data.IsManagingAssocAdmin) && data.Phase == 1 && off.Status == "pending" {
+									<div class="flex items-center gap-2">
+										<form
+											action={ templ.SafeURL(fmt.Sprintf("/requests/%d/offers/%d/reject", data.ID, off.ID)) }
+											method="POST"
+											hx-post={ fmt.Sprintf("/requests/%d/offers/%d/reject", data.ID, off.ID) }
+											hx-target="#request-detail-container"
+										>
+											<button type="submit" class="px-3 py-1.5 rounded-lg border border-stone-300 bg-white hover:bg-stone-100 text-slate-700 text-xs font-bold">
+												Respinge
+											</button>
+										</form>
+										<form
+											action={ templ.SafeURL(fmt.Sprintf("/requests/%d/offers/%d/accept", data.ID, off.ID)) }
+											method="POST"
+											hx-post={ fmt.Sprintf("/requests/%d/offers/%d/accept", data.ID, off.ID) }
+											hx-target="#request-detail-container"
+										>
+											<button type="submit" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs">
+												✓ Acceptă Oferta
+											</button>
+										</form>
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</div>
+
+		<!-- Community Confirmation ("Si eu sunt afectat") & Audit Views -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+			<div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-3">
+				<div class="flex items-center justify-between">
+					<h3 class="text-sm font-bold text-slate-900">Confirmare Comunitate ({ strconv.FormatInt(data.ConfirmationsCount, 10) } apartamente)</h3>
+					if data.IsMajorEmergency {
+						<span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold">Avarie Colectivă</span>
+					}
+				</div>
+				<p class="text-xs text-slate-600">
+					Locuiești în același imobil și ești afectat de această avarie? Confirmă mai jos pentru prioritizarea urgenței.
+				</p>
+				if data.Phase < 4 {
+					<form
+						action={ templ.SafeURL(fmt.Sprintf("/requests/%d/confirm", data.ID)) }
+						method="POST"
+						hx-post={ fmt.Sprintf("/requests/%d/confirm", data.ID) }
+						hx-target="#request-detail-container"
+						class="grid grid-cols-1 sm:grid-cols-3 gap-2"
+					>
+						<input type="text" name="apartament" required placeholder="Nr. Ap. (ex: Ap. 14)" class="px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"/>
+						<input type="tel" name="client_phone" required placeholder="Telefon (07xx...)" class="px-3 py-2 rounded-xl border border-stone-300 bg-white text-xs text-slate-900"/>
+						<button type="submit" class="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold">
+							✋ Și eu sunt afectat
+						</button>
+					</form>
+				}
+				if len(data.Followers) > 0 {
+					<ul class="space-y-1 pt-2 border-t border-stone-100 text-xs text-slate-600">
+						for _, f := range data.Followers {
+							<li class="flex justify-between">
+								<span class="font-semibold text-slate-800">Ap. { f.Apartament } ({ f.MaskedPhone })</span>
+								<span>{ f.CreatedAtFormatted }</span>
+							</li>
+						}
+					</ul>
+				}
+			</div>
+
+			<div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs space-y-3">
+				<h3 class="text-sm font-bold text-slate-900">Jurnal Audit &amp; Vizualizări Tichet ({ strconv.Itoa(len(data.AuditViews)) })</h3>
+				if len(data.AuditViews) == 0 {
+					<p class="text-xs text-slate-500">Nicio vizualizare înregistrată încă.</p>
+				} else {
+					<ul class="space-y-1.5 text-xs text-slate-600">
+						for _, v := range data.AuditViews {
+							<li class="flex items-center justify-between py-1 border-b border-stone-100">
+								<span class="font-semibold text-slate-800">{ v.ViewerName } <span class="text-slate-500 font-normal">({ v.ViewerRole })</span></span>
+								<span class="text-slate-500">{ v.ViewedAtFormatted }</span>
+							</li>
+						}
+					</ul>
+				}
+
+				if (data.IsOwner || data.IsManagingAssocAdmin) && data.Phase == 1 {
+					<div class="pt-3 border-t border-stone-200 flex justify-end">
+						<form action={ templ.SafeURL(fmt.Sprintf("/requests/%d/delete", data.ID)) } method="POST">
+							<button type="submit" class="px-3 py-1.5 rounded-lg border border-red-300 text-red-700 hover:bg-red-50 text-xs font-bold">
+								Arhivează / Anulează Tichetul
+							</button>
+						</form>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+}
+
+templ RequestDetailPage(meta layouts.PageMeta, data RequestDetailViewData) {
+	@layouts.Base(meta) {
+		<section id="request-detail-container" class="py-8 px-4 max-w-5xl mx-auto w-full">
+			@RequestDetailPartial(data)
+		</section>
+	}
+}
+
+templ RequestPrintPage(meta layouts.PageMeta, data RequestPrintViewData) {
+	@layouts.Base(meta) {
+		<section class="py-8 px-4 max-w-4xl mx-auto w-full space-y-6">
+			<div class="flex flex-wrap items-center justify-between gap-3 bg-stone-100 p-4 rounded-xl border border-stone-300">
+				<div class="flex flex-wrap items-center gap-2">
+					<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d", data.TicketID)) } class="px-3 py-1.5 rounded-lg bg-white border border-stone-300 text-xs font-bold text-slate-800">
+						&larr; Înapoi la Tichet #{ strconv.FormatInt(data.TicketID, 10) }
+					</a>
+					<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d/print?type=draft", data.TicketID)) } class={ "px-3 py-1.5 rounded-lg text-xs font-bold", templ.KV("bg-slate-900 text-white", data.DocType == "draft"), templ.KV("bg-white border border-stone-300 text-slate-700", data.DocType != "draft") }>
+						1. Deviz / Proformă
+					</a>
+					<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d/print?type=pv", data.TicketID)) } class={ "px-3 py-1.5 rounded-lg text-xs font-bold", templ.KV("bg-slate-900 text-white", data.DocType == "pv"), templ.KV("bg-white border border-stone-300 text-slate-700", data.DocType != "pv") }>
+						2. Proces-Verbal Recepție
+					</a>
+					<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d/print?type=garantie", data.TicketID)) } class={ "px-3 py-1.5 rounded-lg text-xs font-bold", templ.KV("bg-slate-900 text-white", data.DocType == "garantie"), templ.KV("bg-white border border-stone-300 text-slate-700", data.DocType != "garantie") }>
+						3. Certificat Garanție 12 Luni
+					</a>
+				</div>
+				<span class="text-xs font-semibold text-slate-600">Folosește Ctrl+P / Print din browser pentru salvare PDF</span>
+			</div>
+
+			<article class="bg-white rounded-2xl p-8 border-2 border-slate-900 space-y-6">
+				<header class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-slate-900 pb-4">
+					<div>
+						<p class="text-xs font-bold uppercase tracking-widest text-orange-600">Platforma Tehnică InstalBloc.ro</p>
+						<h1 class="text-2xl font-bold text-slate-900 mt-1">{ data.DocTitle }</h1>
+						<p class="text-xs text-slate-600">Tichet #{ strconv.FormatInt(data.TicketID, 10) } · Data emiterii: { data.IssuedAtFormatted }</p>
+					</div>
+					<div class="text-right text-xs text-slate-700">
+						<div class="font-bold text-slate-900">Regim Financiar: { data.SursaFonduriLabel }</div>
+						if data.InvoiceNumber != "" {
+							<div>Doc. Fiscal: <span class="font-bold">{ data.InvoiceNumber }</span></div>
+						}
+						if data.AprobatAdmin {
+							<div class="text-emerald-700 font-bold">✓ Aprobat de Administratorul Asociației</div>
+						}
+					</div>
+				</header>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-slate-800">
+					<div class="p-4 rounded-xl bg-stone-50 border border-stone-300 space-y-1">
+						<h2 class="font-bold uppercase text-slate-900 border-b border-stone-200 pb-1">1. Beneficiar Lucrare</h2>
+						<div>Nume / Reprezentant: <span class="font-bold">{ data.ClientName }</span></div>
+						if data.TicketAsociatie != "" {
+							<div>Asociația de Proprietari: <span class="font-bold">{ data.TicketAsociatie }</span></div>
+						}
+						<div>Adresă Imobil: <span class="font-semibold">{ data.TicketAddress } ({ data.TicketCounty })</span></div>
+						if data.TicketApartament != "" {
+							<div>Apartament / Scară: <span class="font-semibold">{ data.TicketApartament }</span></div>
+						}
+					</div>
+
+					<div class="p-4 rounded-xl bg-stone-50 border border-stone-300 space-y-1">
+						<h2 class="font-bold uppercase text-slate-900 border-b border-stone-200 pb-1">2. Executant / Prestator Autorizat</h2>
+						<div>Denumire Firmă: <span class="font-bold">{ data.ProviderCompany }</span></div>
+						<div>Reprezentant Tehnic: <span class="font-semibold">{ data.ProviderName }</span></div>
+						<div>CUI / CIF: <span class="font-semibold">{ data.ProviderCUI }</span></div>
+						<div>Telefon: <span class="font-semibold">{ data.ProviderPhone }</span></div>
+					</div>
+				</div>
+
+				<div class="space-y-2 text-xs text-slate-800">
+					<h2 class="font-bold uppercase text-slate-900">3. Obiectul Intervenției ({ data.TicketCategory })</h2>
+					<div class="p-4 rounded-xl border border-stone-300 space-y-1">
+						<div class="font-bold text-sm text-slate-900">{ data.TicketTitle }</div>
+						<p class="text-slate-700">{ data.TicketDescription }</p>
+					</div>
+				</div>
+
+				if data.DocType == "pv" || data.DocType == "garantie" {
+					<div class="space-y-2 text-xs text-slate-800">
+						<h2 class="font-bold uppercase text-slate-900">4. Lucrări Efectuate &amp; Materiale Puse în Operă</h2>
+						<div class="p-4 rounded-xl border border-stone-300 space-y-2">
+							<div><span class="font-bold">Operațiuni executate:</span> { data.RaportLucrari }</div>
+							<div><span class="font-bold">Materiale utilizate:</span> { data.RaportMateriale }</div>
+							if data.RaportObservatii != "" {
+								<div><span class="font-bold">Observații / Probe presiune:</span> { data.RaportObservatii }</div>
+							}
+						</div>
+					</div>
+				}
+
+				<div class="p-4 rounded-xl bg-stone-50 border border-stone-300 flex flex-wrap items-center justify-between gap-4 text-xs">
+					<div>
+						<div>Manoperă: <span class="font-bold text-slate-900">{ data.ManoperaFormatted }</span></div>
+						<div>Materiale: <span class="font-bold text-slate-900">{ data.MaterialeFormatted }</span></div>
+					</div>
+					<div class="text-right">
+						<div class="text-sm font-bold text-slate-900">Total Deviz: { data.TotalFormatted }</div>
+						if data.DocType == "garantie" {
+							<div class="text-emerald-700 font-bold">Valabilitate Garanție (12 Luni): până la { data.WarrantyExpiresFormatted }</div>
+						}
+					</div>
+				</div>
+
+				<footer class="grid grid-cols-2 gap-8 pt-6 border-t border-stone-300 text-xs text-slate-700">
+					<div class="space-y-6">
+						<div class="font-bold uppercase text-slate-900">Semnătură Beneficiar / Administrator</div>
+						<div class="border-b border-stone-400 w-48"></div>
+					</div>
+					<div class="space-y-6 text-right">
+						<div class="font-bold uppercase text-slate-900">Semnătură &amp; Ștampilă Prestator</div>
+						<div class="border-b border-stone-400 w-48 ml-auto"></div>
+					</div>
+				</footer>
+			</article>
+		</section>
+	}
+}
+
+templ ProviderOffersPage(meta layouts.PageMeta, data ProviderOffersPageData) {
+	@layouts.Base(meta) {
+		<section class="py-8 px-4 max-w-6xl mx-auto w-full space-y-6">
+			<div class="flex flex-wrap items-center justify-between gap-4 bg-white rounded-2xl p-6 border border-stone-200 shadow-xs">
+				<div>
+					<h1 class="text-2xl font-bold text-slate-900">Ofertele Mele Trimise</h1>
+					<p class="text-xs text-slate-600 mt-1">
+						Modificări de preț utilizate în această lună: <span class="font-bold text-slate-900">{ strconv.FormatInt(data.MonthlyModsUsed, 10) } / 3</span> (Oferirea inițială și retragerea sunt 100% gratuite).
+					</p>
+				</div>
+				<a href="/dashboard" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+					&larr; Înapoi la Panou Lucrări
+				</a>
+			</div>
+
+			<!-- Filter Tabs -->
+			<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+				<a
+					href="/dashboard/oferte?tab=toate"
+					class={ "p-4 rounded-2xl border text-left transition-colors", templ.KV("bg-slate-900 text-white border-slate-900", data.ActiveTab == "toate"), templ.KV("bg-white text-slate-800 border-stone-200 hover:border-stone-400", data.ActiveTab != "toate") }
+				>
+					<div class="text-xs font-bold uppercase opacity-80">Toate Ofertele</div>
+					<div class="text-2xl font-bold mt-1">{ strconv.Itoa(data.TotalCount) }</div>
+				</a>
+				<a
+					href="/dashboard/oferte?tab=asteptare"
+					class={ "p-4 rounded-2xl border text-left transition-colors", templ.KV("bg-amber-600 text-white border-amber-600", data.ActiveTab == "asteptare"), templ.KV("bg-white text-slate-800 border-stone-200 hover:border-stone-400", data.ActiveTab != "asteptare") }
+				>
+					<div class="text-xs font-bold uppercase opacity-80">În Așteptare</div>
+					<div class="text-2xl font-bold mt-1">{ strconv.Itoa(data.PendingCount) }</div>
+				</a>
+				<a
+					href="/dashboard/oferte?tab=acceptate"
+					class={ "p-4 rounded-2xl border text-left transition-colors", templ.KV("bg-emerald-600 text-white border-emerald-600", data.ActiveTab == "acceptate"), templ.KV("bg-white text-slate-800 border-stone-200 hover:border-stone-400", data.ActiveTab != "acceptate") }
+				>
+					<div class="text-xs font-bold uppercase opacity-80">Acceptate / În Lucru</div>
+					<div class="text-2xl font-bold mt-1">{ strconv.Itoa(data.AcceptedCount) }</div>
+				</a>
+				<a
+					href="/dashboard/oferte?tab=respinse"
+					class={ "p-4 rounded-2xl border text-left transition-colors", templ.KV("bg-stone-700 text-white border-stone-700", data.ActiveTab == "respinse"), templ.KV("bg-white text-slate-800 border-stone-200 hover:border-stone-400", data.ActiveTab != "respinse") }
+				>
+					<div class="text-xs font-bold uppercase opacity-80">Respinse / Retrase</div>
+					<div class="text-2xl font-bold mt-1">{ strconv.Itoa(data.RejectedCount) }</div>
+				</a>
+			</div>
+
+			if len(data.Items) == 0 {
+				<div class="bg-white rounded-2xl p-8 border border-stone-200 text-center space-y-2">
+					<p class="text-sm font-bold text-slate-800">Nicio ofertă în această categorie.</p>
+					<p class="text-xs text-slate-600">Explorează tichetele deschise din Panoul de Lucrări și trimite oferte gratuit.</p>
+				</div>
+			} else {
+				<div class="space-y-3">
+					for _, item := range data.Items {
+						<div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+							<div class="space-y-1">
+								<div class="flex flex-wrap items-center gap-2">
+									<span class="text-xs font-bold text-slate-500">Tichet #{ strconv.FormatInt(item.RequestID, 10) }</span>
+									<span class="px-2.5 py-0.5 rounded-full bg-stone-100 text-slate-800 text-xs font-semibold">{ item.ReportPhaseLabel }</span>
+									<span
+										class={
+											"px-2.5 py-0.5 rounded-full text-xs font-bold",
+											templ.KV("bg-emerald-100 text-emerald-800", item.OfferStatus == "accepted"),
+											templ.KV("bg-amber-100 text-amber-800", item.OfferStatus == "pending"),
+											templ.KV("bg-stone-200 text-slate-700", item.OfferStatus != "accepted" && item.OfferStatus != "pending"),
+										}
+									>
+										{ item.OfferStatusLabel }
+									</span>
+								</div>
+								<h3 class="text-base font-bold text-slate-900">
+									<a href={ templ.SafeURL(fmt.Sprintf("/requests/%d", item.RequestID)) } class="hover:text-orange-600">
+										{ item.ReportTitle }
+									</a>
+								</h3>
+								<p class="text-xs text-slate-600">
+									📍 { item.ReportCounty } ({ item.ReportZone }) · { item.ReportCategory } · Trimisă la { item.CreatedAtFormatted }
+								</p>
+							</div>
+
+							<div class="flex items-center gap-4">
+								<div class="text-right">
+									<div class="text-sm font-bold text-slate-900">Total: { item.TotalFormatted }</div>
+									<div class="text-xs text-slate-500">Manoperă: { item.PriceFormatted } · Mat: { item.MaterialsFormatted }</div>
+								</div>
+								<a
+									href={ templ.SafeURL(fmt.Sprintf("/requests/%d", item.RequestID)) }
+									class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold"
+								>
+									Deschide Tichet &rarr;
+								</a>
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</section>
+	}
+}

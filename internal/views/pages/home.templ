@@ -1,0 +1,168 @@
+package pages
+
+import (
+	"strconv"
+	"instalbloc/internal/domain"
+	"instalbloc/internal/views/layouts"
+)
+
+templ Home(meta layouts.PageMeta) {
+	@layouts.Base(meta) {
+		<script type="application/ld+json" nonce={ meta.CSPNonce }>
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "InstalBloc",
+				"url": "https://www.instalbloc.ro",
+				"description": "Platformă națională de reparații sanitare, termice și intervenții tehnice pentru asociațiile de proprietari și locatarii din România.",
+				"inLanguage": "ro-RO"
+			}
+		</script>
+
+		<!-- Hero Section -->
+		<section class="relative overflow-hidden bg-slate-900 text-white py-16 md:py-24 px-4 border-b border-slate-800">
+			<div class="max-w-5xl mx-auto text-center space-y-6 relative z-10">
+				<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs sm:text-sm font-medium">
+					<span class="w-2 h-2 rounded-full bg-orange-500"></span>
+					Platforma Națională pentru Asociații de Proprietari &amp; Intervenții la Bloc
+				</div>
+
+				<h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+					Reparații Sanitare, Termice și Lucrări la Bloc — <span class="text-orange-400">Fără Intermediari, Cu Garanție Scrisă</span>
+				</h1>
+
+				<p class="text-slate-300 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed">
+					Conectăm direct administratorii de bloc și locatarii cu instalatori autorizați, electricieni, echipe de hidroizolații și firme de mentenanță din toate cele { strconv.Itoa(len(domain.Counties)) } de județe ale României.
+				</p>
+
+				<div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+					<a
+						href="/requests/new"
+						class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-orange-600 px-6 py-3.5 text-base font-bold text-white shadow-lg hover:bg-orange-700 transition-colors"
+					>
+						Postează o Lucrare / Avarie
+					</a>
+					<a
+						href="/onboarding"
+						class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-800/80 px-6 py-3.5 text-base font-semibold text-white hover:bg-slate-800 transition-colors"
+					>
+						Înregistrează Asociație sau Firmă
+					</a>
+				</div>
+
+				<div class="pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
+					<div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+						<p class="text-orange-400 font-bold text-sm">Transparență Totală</p>
+						<p class="text-xs text-slate-300 mt-1">Oferte comparabile direct în panoul asociației pentru Comitetul Executiv și Cenzori.</p>
+					</div>
+					<div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+						<p class="text-emerald-400 font-bold text-sm">Cod QR pe Scara Blocului</p>
+						<p class="text-xs text-slate-300 mt-1">Locatarii raportează avariile în 30 de secunde prin scanarea avizierului digital.</p>
+					</div>
+					<div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+						<p class="text-sky-400 font-bold text-sm">Prestatori Verificați</p>
+						<p class="text-xs text-slate-300 mt-1">Recenzii reale de la asociații, istoric de lucrări și garanție în luni specificată în ofertă.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 14 Service Categories Grid -->
+		<section class="py-16 px-4 max-w-7xl mx-auto w-full">
+			<div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+				<h2 class="text-2xl sm:text-3xl font-bold text-slate-900">
+					Toate cele { strconv.Itoa(len(domain.ServiceCategories)) } Categorii de Intervenții pentru Blocul Tău
+				</h2>
+				<p class="text-slate-600 text-sm sm:text-base">
+					De la urgențe la subsol și coloane sparte până la reabilitarea terasei, ascensoare ISCIR și curățenie profesională.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+				for idx, cat := range domain.ServiceCategories {
+					<div class="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs hover:border-orange-300 hover:shadow-md transition-all flex flex-col justify-between" data-category-index={ strconv.Itoa(idx + 1) }>
+						<div class="space-y-2">
+							<div class="flex items-center justify-between gap-2">
+								<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-orange-50 text-orange-700 font-semibold text-xs border border-orange-200">
+									Categoria #{ strconv.Itoa(idx + 1) }
+								</span>
+							</div>
+							<h3 class="text-lg font-bold text-slate-900">{ cat }</h3>
+							<p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Intervenții autorizate și oferte cu garanție pentru { cat }.</p>
+						</div>
+						<div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-semibold text-orange-600">
+							<span>Solicită oferte în această categorie</span>
+							<a href={ templ.SafeURL("/requests/new?category=" + domain.NormalizeCategory(cat)) } class="underline underline-offset-2 hover:text-orange-700">
+								Postează &rarr;
+							</a>
+						</div>
+					</div>
+				}
+			</div>
+		</section>
+
+		<!-- How It Works by Role -->
+		<section class="py-16 px-4 bg-white border-t border-b border-stone-200 w-full">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+					<h2 class="text-2xl sm:text-3xl font-bold text-slate-900">
+						Cum Funcționează Platforma InstalBloc?
+					</h2>
+					<p class="text-slate-600 text-sm sm:text-base">
+						Flux digital simplificat, proiectat special pentru legislația asociațiilor de proprietari (Legea 196/2018).
+					</p>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col justify-between space-y-4">
+						<div class="space-y-3">
+							<span class="inline-block px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+								1. Pentru Asociații &amp; Administratori
+							</span>
+							<h3 class="text-xl font-bold text-slate-900">Gestiune Multi-Bloc &amp; Selecție Transparentă</h3>
+							<p class="text-sm text-slate-600 leading-relaxed">
+								Înregistrezi asociațiile administrate, descarci afișul cu Cod QR pentru avizier, primești sesizările locatarilor cu poze de la avarie și selectezi cea mai bună ofertă cu garanție.
+							</p>
+						</div>
+						<div class="pt-4 border-t border-stone-200 flex items-center justify-between">
+							<span class="text-xs font-semibold text-slate-500">Abonament: <strong class="text-slate-900">50 RON / lună</strong></span>
+							<a href="/onboarding?role=asociatie" class="text-sm font-bold text-emerald-700 hover:underline">Creează cont &rarr;</a>
+						</div>
+					</div>
+
+					<div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col justify-between space-y-4">
+						<div class="space-y-3">
+							<span class="inline-block px-3 py-1 rounded-full bg-orange-50 text-orange-700 border border-orange-200 text-xs font-bold">
+								2. Pentru Locatari &amp; Proprietari
+							</span>
+							<h3 class="text-xl font-bold text-slate-900">Raportare Avarii sau Lucrări în Apartament</h3>
+							<p class="text-sm text-slate-600 leading-relaxed">
+								Scanezi codul QR de la avizier pentru a raporta o avarie pe spațiile comune către administrator sau postezi direct o lucrare privată pentru apartamentul tău.
+							</p>
+						</div>
+						<div class="pt-4 border-t border-stone-200 flex items-center justify-between">
+							<span class="text-xs font-semibold text-emerald-700"><strong>100% GRATUIT</strong> pentru locatari</span>
+							<a href="/onboarding?role=locatar" class="text-sm font-bold text-orange-600 hover:underline">Intră gratuit &rarr;</a>
+						</div>
+					</div>
+
+					<div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col justify-between space-y-4">
+						<div class="space-y-3">
+							<span class="inline-block px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold">
+								3. Pentru Firme &amp; Instalatori Autorizați
+							</span>
+							<h3 class="text-xl font-bold text-slate-900">Acces Direct la Lucrările din Județul Tău</h3>
+							<p class="text-sm text-slate-600 leading-relaxed">
+								Vezi cererile reale postate de asociații și proprietari, trimiți oferte ferme cu preț estimat și garanție, și ești contactat direct când oferta ta este acceptată.
+							</p>
+						</div>
+						<div class="pt-4 border-t border-stone-200 flex items-center justify-between">
+							<span class="text-xs font-semibold text-slate-500">Abonament: <strong class="text-slate-900">50 RON / lună</strong></span>
+							<a href="/onboarding?role=prestator" class="text-sm font-bold text-sky-700 hover:underline">Înscrie firma &rarr;</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	}
+}

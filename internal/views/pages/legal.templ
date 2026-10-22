@@ -1,0 +1,94 @@
+package pages
+
+import "instalbloc/internal/views/layouts"
+
+templ TermeniPage(meta layouts.PageMeta) {
+	@layouts.Base(meta) {
+		<section class="py-12 px-4 max-w-4xl mx-auto w-full space-y-6">
+			<div class="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-6">
+				<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Termeni și Condiții de Utilizare — InstalBloc</h1>
+				<div class="space-y-4 text-sm text-slate-700 leading-relaxed">
+					<p>
+						Platforma <strong>InstalBloc</strong> conectează asociațiile de proprietari (reglementate conform Legii 196/2018), locatarii/clienții independenți și firmele/prestatorii autorizați în instalații sanitare, termice, electrice și intervenții tehnice la bloc.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">1. Rolurile și Accesul în Platformă</h2>
+					<p>
+						Utilizatorii se pot înregistra ca Locatar/Client (10 RON/lună), Asociație de Proprietari (3 RON / apartament / lună) sau Prestator/Firmă Autorizată (15 RON/lună, ciclu de 30 de zile). Fiecare entitate (CUI, denumire firmă/asociație, telefon) este validată anti-duplicat.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">2. Reguli de Ofertare și Transparență</h2>
+					<p>
+						Prestatorii cu abonament activ pot transmite oferte inițiale nelimitate pentru lucrările deschise din domeniul lor. Modificarea unei oferte deja trimise este plafonată la maximum 3 modificări pe lună calendaristică, iar retragerea unei oferte este gratuită și nelimitată.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">3. SLA 96h și Recepția Lucrărilor</h2>
+					<p>
+						După acceptarea unei oferte, tichetul intră în faza de execuție monitorizată (SLA 96 de ore). Finalizarea lucrării necesită Proces-Verbal digital (manoperă și materiale) și confirmarea beneficiarului.
+					</p>
+				</div>
+			</div>
+		</section>
+	}
+}
+
+templ GDPRPage(meta layouts.PageMeta) {
+	@layouts.Base(meta) {
+		<section class="py-12 px-4 max-w-4xl mx-auto w-full space-y-6">
+			<div class="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-6">
+				<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Politica de Confidențialitate (GDPR)</h1>
+				<div class="space-y-4 text-sm text-slate-700 leading-relaxed">
+					<p>
+						În conformitate cu Regulamentul (UE) 2016/679 (GDPR), <strong>InstalBloc SRL</strong> prelucrează datele cu caracter personal exclusiv în scopul operării tehnice a platformei, gestionării sesizărilor de avarie și facturării abonamentelor.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">1. Izolarea și Mascarea Datelor (PII Protection)</h2>
+					<p>
+						Datele de contact ale locatarilor și asociațiilor sunt protejate și devin vizibile exclusiv prestatorilor autorizați în cadrul procesului de ofertare/intervenție. În jurnalele tehnice de sistem, adresele de email sunt mascate criptografic.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">2. Drepturile Utilizatorilor</h2>
+					<p>
+						Beneficiați de dreptul de acces, rectificare, ștergere („dreptul de a fi uitat”), restricționare a prelucrării și portabilitate a datelor, adresând o solicitare la <strong>contact@instalbloc.ro</strong>.
+					</p>
+				</div>
+			</div>
+		</section>
+	}
+}
+
+templ CookiesPage(meta layouts.PageMeta) {
+	@layouts.Base(meta) {
+		<section class="py-12 px-4 max-w-4xl mx-auto w-full space-y-6">
+			<div class="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-6">
+				<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Politica de Cookie-uri</h1>
+				<div class="space-y-4 text-sm text-slate-700 leading-relaxed">
+					<p>
+						Platforma <strong>InstalBloc</strong> utilizează exclusiv cookie-uri strict necesare pentru securitatea sesiunii de autentificare (semnate criptografic cu HMAC-SHA256, atribut <code>HttpOnly</code> și <code>SameSite=Lax</code>).
+					</p>
+					<p>
+						Nu utilizăm cookie-uri invazive de tracking publicitar terț și nu vindem datele utilizatorilor către rețele de publicitate.
+					</p>
+				</div>
+			</div>
+		</section>
+	}
+}
+
+templ GarantiePage(meta layouts.PageMeta) {
+	@layouts.Base(meta) {
+		<section class="py-12 px-4 max-w-4xl mx-auto w-full space-y-6">
+			<div class="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-6">
+				<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Cum Funcționează Garanția Lucrărilor pe InstalBloc?</h1>
+				<div class="space-y-4 text-sm text-slate-700 leading-relaxed">
+					<p>
+						Fiecare ofertă depusă în <strong>Panoul de Lucrări InstalBloc</strong> include transparent prețul manoperei, estimarea materialelor, timpul de intervenție și condițiile de execuție.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">1. Deviz și Proces-Verbal Digital</h2>
+					<p>
+						La finalizarea intervenției, prestatorul completează raportul tehnic de recepție (lucrări efectuate, materiale utilizate, cost final manoperă și materiale în RON) și atașează fotografia lucrării recepționate.
+					</p>
+					<h2 class="text-lg font-bold text-slate-900 pt-2">2. Istoric Auditabil pentru Cenzori și Comitet</h2>
+					<p>
+						Toate ofertele și rapoartele tehnice rămân arhivate în contul asociației de proprietari, asigurând trasabilitate completă la controalele financiare și tehnice.
+					</p>
+				</div>
+			</div>
+		</section>
+	}
+}

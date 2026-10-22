@@ -1,0 +1,90 @@
+package components
+
+import (
+	"strconv"
+	"instalbloc/internal/domain"
+)
+
+templ Navbar(session domain.SessionView) {
+	<header class="border-b border-stone-200 bg-white sticky top-0 z-40 shadow-xs" x-data="mobileMenu">
+		<div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+			if session.IsSuperAdmin {
+				<a href="/platform-admin" class="flex items-center gap-2 font-bold text-lg sm:text-xl tracking-tight text-orange-600 shrink-0">
+					<div class="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
+						<img src="/icon.svg" alt="InstalBloc" class="w-5 h-5"/>
+					</div>
+					<span>InstalBloc</span>
+				</a>
+			} else {
+				<a href="/" class="flex items-center gap-2 font-bold text-lg sm:text-xl tracking-tight text-orange-600 shrink-0">
+					<div class="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
+						<img src="/icon.svg" alt="InstalBloc" class="w-5 h-5"/>
+					</div>
+					<span>InstalBloc</span>
+				</a>
+			}
+
+			if session.IsLoggedIn() && !session.IsSuperAdmin {
+				<nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
+					if session.Role == domain.RoleAsociatie {
+						<a href="/associations" class="hover:text-orange-600 transition-colors text-emerald-700 font-semibold">
+							Asociațiile Mele
+						</a>
+					}
+					<a href="/dashboard" class="hover:text-orange-600 transition-colors">
+						if session.Role == domain.RoleAsociatie {
+							Tichete &amp; Lucrări
+						} else {
+							Panou / Lucrări
+						}
+					</a>
+					if session.Role == domain.RolePrestator {
+						<a href="/dashboard/oferte" class="hover:text-orange-600 transition-colors text-sky-600 font-semibold">
+							Ofertele Mele
+						</a>
+					}
+					if session.Role == domain.RoleLocatar || session.Role == domain.RoleAsociatie {
+						<a href="/requests/new" class="hover:text-orange-600 transition-colors">
+							Postează Anunț
+						</a>
+					}
+					if session.Role == domain.RoleAsociatie {
+						<a href="/dashboard/qr" class="hover:text-orange-600 transition-colors text-slate-500">
+							Cod QR Avizier
+						</a>
+					}
+					<a href="/dashboard/facturi" class="hover:text-orange-600 transition-colors text-orange-600 font-semibold">
+						Abonament / Facturi
+					</a>
+				</nav>
+			}
+
+			<div class="flex items-center gap-2 sm:gap-4">
+				if session.IsLoggedIn() {
+					if session.IsSuperAdmin {
+						<a href="/platform-admin" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-bold text-xs shadow-xs">
+							Panou Administrare &amp; Rapoarte
+						</a>
+					}
+					<div class="hidden lg:block text-sm text-slate-500 border-r border-stone-200 pr-4" data-uid={ strconv.FormatInt(session.UserID, 10) }>
+						Autentificat ca: <span class="font-semibold text-slate-900">{ session.Name } ({ session.RoleLabel() })</span>
+					</div>
+					<form action="/logout" method="POST" class="hidden md:block">
+						<button type="submit" title="Deconectare" class="px-3 py-1.5 rounded-lg border border-stone-200 text-xs font-medium text-slate-600 hover:bg-stone-100 transition-colors">
+							Deconectare
+						</button>
+					</form>
+				} else {
+					<div class="flex items-center gap-2">
+						<a href="/login" class="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-800 hover:bg-stone-100 transition-colors">
+							Intră în Cont
+						</a>
+						<a href="/onboarding" class="inline-flex items-center justify-center rounded-lg bg-orange-600 px-3 py-1.5 text-xs sm:text-sm font-semibold text-white hover:bg-orange-700 transition-colors shadow-xs">
+							Creează Cont
+						</a>
+					</div>
+				}
+			</div>
+		</div>
+	</header>
+}

@@ -1,0 +1,261 @@
+package pages
+
+import (
+	"instalbloc/internal/domain"
+	"instalbloc/internal/views/layouts"
+)
+
+templ OnboardingPage(meta layouts.PageMeta, selectedRole string, errMsg string) {
+	@layouts.Base(meta) {
+		<section class="py-12 px-4 max-w-2xl mx-auto w-full">
+			<div class="bg-white rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6">
+				<div class="text-center space-y-2">
+					<h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Creează Cont pe InstalBloc</h1>
+					<p class="text-sm text-slate-600">
+						Alege profilul potrivit și configurează-ți accesul în mai puțin de 2 minute.
+					</p>
+				</div>
+
+				<!-- Role Selector Tabs -->
+				<div class="grid grid-cols-3 gap-2 p-1.5 bg-stone-100 rounded-xl border border-stone-200">
+					<a
+						href="/onboarding?role=locatar"
+						class={ "text-center py-2.5 px-2 rounded-lg text-xs sm:text-sm font-bold transition-colors", templ.KV("bg-orange-600 text-white shadow-xs", selectedRole == "locatar"), templ.KV("text-slate-700 hover:bg-white", selectedRole != "locatar") }
+					>
+						Locatar / Client
+					</a>
+					<a
+						href="/onboarding?role=asociatie"
+						class={ "text-center py-2.5 px-2 rounded-lg text-xs sm:text-sm font-bold transition-colors", templ.KV("bg-emerald-600 text-white shadow-xs", selectedRole == "asociatie"), templ.KV("text-slate-700 hover:bg-white", selectedRole != "asociatie") }
+					>
+						Asociație Bloc
+					</a>
+					<a
+						href="/onboarding?role=prestator"
+						class={ "text-center py-2.5 px-2 rounded-lg text-xs sm:text-sm font-bold transition-colors", templ.KV("bg-slate-900 text-white shadow-xs", selectedRole == "prestator"), templ.KV("text-slate-700 hover:bg-white", selectedRole != "prestator") }
+					>
+						Firmă / Prestator
+					</a>
+				</div>
+
+				if errMsg != "" {
+					<div class="p-3.5 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm font-medium" role="alert">
+						{ errMsg }
+					</div>
+				}
+
+				<form action="/onboarding" method="POST" class="space-y-4">
+					<input type="hidden" name="role" value={ selectedRole }/>
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="space-y-1">
+							<label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nume și Prenume Reprezentant</label>
+							<input
+								id="name"
+								name="name"
+								type="text"
+								required
+								placeholder="Ex: Ion Popescu"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+						<div class="space-y-1">
+							<label for="phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Telefon de Contact</label>
+							<input
+								id="phone"
+								name="phone"
+								type="tel"
+								required
+								placeholder="07xxxxxxxx"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="space-y-1">
+							<label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Adresă de Email</label>
+							<input
+								id="email"
+								name="email"
+								type="email"
+								required
+								placeholder="contact@exemplu.ro"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+						<div class="space-y-1">
+							<label for="password" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Parolă Cont (minim 8 caractere)</label>
+							<input
+								id="password"
+								name="password"
+								type="password"
+								minlength="8"
+								required
+								placeholder="••••••••"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					</div>
+
+					if selectedRole == "asociatie" {
+						<div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-4">
+							<h3 class="text-sm font-bold text-emerald-800">Datele Asociației de Proprietari</h3>
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+								<div class="space-y-1">
+									<label for="entity_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Denumire Asociație</label>
+									<input
+										id="entity_name"
+										name="entity_name"
+										type="text"
+										required
+										placeholder="Ex: Asociația de Proprietari Bloc A1"
+										class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+									/>
+								</div>
+								<div class="space-y-1">
+									<label for="cui" class="block text-xs font-bold uppercase tracking-wider text-slate-700">CIF / CUI Asociație</label>
+									<input
+										id="cui"
+										name="cui"
+										type="text"
+										required
+										placeholder="Ex: 12345678"
+										class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+									/>
+								</div>
+							</div>
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+								<div class="space-y-1">
+									<label for="apartment_count" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Număr Apartamente (Tarif: 3 RON / ap.)</label>
+									<input
+										id="apartment_count"
+										name="apartment_count"
+										type="number"
+										min="1"
+										max="2000"
+										required
+										value="40"
+										class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+									/>
+								</div>
+								<div class="space-y-1">
+									<label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Adresă Bloc / Scara</label>
+									<input
+										id="address"
+										name="address"
+										type="text"
+										required
+										placeholder="Str. Exemplu nr. 10, Bl. A1"
+										class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+									/>
+								</div>
+							</div>
+						</div>
+					}
+
+					if selectedRole == "prestator" {
+						<div class="p-4 rounded-xl bg-sky-50 border border-sky-200 space-y-4">
+							<h3 class="text-sm font-bold text-sky-700">Datele Firmei / PFA Prestator Autorizat</h3>
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+								<div class="space-y-1">
+									<label for="entity_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Denumire Firmă (SRL / PFA / II)</label>
+									<input
+										id="entity_name"
+										name="entity_name"
+										type="text"
+										required
+										placeholder="Ex: S.C. Instal Termic S.R.L."
+										class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+									/>
+								</div>
+								<div class="space-y-1">
+									<label for="cui" class="block text-xs font-bold uppercase tracking-wider text-slate-700">CUI / CIF Firmă</label>
+									<input
+										id="cui"
+										name="cui"
+										type="text"
+										required
+										placeholder="Ex: RO12345678"
+										class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+									/>
+								</div>
+							</div>
+							<div class="space-y-1">
+								<label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Specializări Principale &amp; Autorizații (ANRE / ISCIR)</label>
+								<input
+									id="description"
+									name="description"
+									type="text"
+									required
+									placeholder="Ex: Instalații sanitare, termice, hidroizolații, urgențe 24/7"
+									class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+								/>
+							</div>
+						</div>
+					}
+
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="space-y-1">
+							<label for="county" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Județ</label>
+							<select
+								id="county"
+								name="county"
+								required
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							>
+								for _, county := range domain.Counties {
+									<option value={ county }>{ county }</option>
+								}
+							</select>
+						</div>
+						<div class="space-y-1">
+							<label for="city" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Localitate / Sector</label>
+							<input
+								id="city"
+								name="city"
+								type="text"
+								required
+								placeholder="Ex: București, Sector 3"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					</div>
+
+					if selectedRole == "locatar" {
+						<div class="space-y-1">
+							<label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Adresă Imobil / Apartament</label>
+							<input
+								id="address"
+								name="address"
+								type="text"
+								required
+								placeholder="Ex: Str. Primăverii nr. 12, Bl. B2, Ap. 15"
+								class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-sm text-slate-900"
+							/>
+						</div>
+					}
+
+					<div class="flex items-start gap-2.5 pt-2">
+						<input id="terms" name="terms" type="checkbox" required class="mt-1 w-4 h-4"/>
+						<label for="terms" class="text-xs text-slate-600 leading-relaxed">
+							Sunt de acord cu <a href="/termeni" class="font-semibold text-orange-600 underline">Termenii și Condițiile</a> și <a href="/gdpr" class="font-semibold text-orange-600 underline">Politica GDPR</a> a platformei InstalBloc.
+						</label>
+					</div>
+
+					<button
+						type="submit"
+						class="w-full py-3.5 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm shadow-xs transition-colors"
+					>
+						Finalizează Înregistrarea Contului
+					</button>
+				</form>
+
+				<div class="pt-4 border-t border-stone-200 text-center text-xs text-slate-600">
+					Ai deja cont pe InstalBloc?
+					<a href="/login" class="font-bold text-orange-600 hover:underline">Intră în cont &rarr;</a>
+				</div>
+			</div>
+		</section>
+	}
+}
